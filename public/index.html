@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Node.js Redis Service</title>
+<style>
+  body { font-family: sans-serif; margin: 20px; }
+  h1 { color: #4CAF50; }
+  label { display: block; margin: 8px 0 4px; }
+  input, button { margin-bottom: 10px; }
+  .section { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<h1>Node.js Redis Service Manager</h1>
+
+<div class="section">
+  <h3>Register Service</h3>
+  <input id="regName" placeholder="Service Name"><br>
+  <input id="regUrl" placeholder="Service URL"><br>
+  <input id="regMax" placeholder="Max Requests" type="number"><br>
+  <button onclick="register()">Register</button>
+  <pre id="regResult"></pre>
+</div>
+
+<div class="section">
+  <h3>Check Service Status</h3>
+  <input id="statName" placeholder="Service Name"><br>
+  <input id="statToken" placeholder="Auth Token"><br>
+  <button onclick="checkStatus()">Check Status</button>
+  <pre id="statResult"></pre>
+</div>
+
+<div class="section">
+  <h3>Use Service</h3>
+  <input id="useName" placeholder="Service Name"><br>
+  <input id="useToken" placeholder="Auth Token"><br>
+  <button onclick="useService()">Use Service</button>
+  <pre id="useResult"></pre>
+</div>
+
+<script>
+async function register() {
+  const res = await fetch("/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      serviceName: document.getElementById("regName").value,
+      serviceUrl: document.getElementById("regUrl").value,
+      maxRequests: document.getElementById("regMax").value
+    })
+  });
+  const data = await res.json();
+  document.getElementById("regResult").textContent = JSON.stringify(data, null, 2);
+}
+
+async function checkStatus() {
+  const res = await fetch("/status", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": document.getElementById("statToken").value
+    },
+    body: JSON.stringify({
+      serviceName: document.getElementById("statName").value
+    })
+  });
+  const data = await res.json();
+  document.getElementById("statResult").textContent = JSON.stringify(data, null, 2);
+}
+
+async function useService() {
+  const res = await fetch("/use", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": document.getElementById("useToken").value
+    },
+    body: JSON.stringify({
+      serviceName: document.getElementById("useName").value
+    })
+  });
+  const data = await res.json();
+  document.getElementById("useResult").textContent = JSON.stringify(data, null, 2);
+}
+</script>
+</body>
+</html>
