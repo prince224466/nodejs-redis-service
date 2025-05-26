@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🚀 API Gateway Tester</title>
+  <style>
+    body { font-family: Arial; margin: 40px; }
+    textarea { width: 100%; height: 100px; }
+  </style>
+</head>
+<body>
+  <h1>Middleware Tester</h1>
+  <p><b>Auth Token:</b> <input id="authToken" value="abc123"></p>
+  <p><b>Service:</b> <input id="service" value="creative-analysis"></p>
+  <p><b>Payload:</b> <textarea id="payload">{ "query": "Test request from frontend 1" }</textarea></p>
+  <button onclick="sendRequest()">Send Request</button>
+  <button onclick="checkAdmin()">Check Admin Status</button>
+  <h3>Response:</h3>
+  <pre id="response"></pre>
+
+  <script>
+    async function sendRequest() {
+      const authToken = document.getElementById('authToken').value;
+      const service = document.getElementById('service').value;
+      const payload = JSON.parse(document.getElementById('payload').value);
+      const res = await fetch('/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ authToken, service, payload }),
+      });
+      const data = await res.json();
+      document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+    }
+
+    async function checkAdmin() {
+      const res = await fetch('/admin-status');
+      const data = await res.json();
+      document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
